@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StunningAI — Design Intelligence at Scale</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['DM Sans', 'system-ui', 'sans-serif'] },
+          colors: {
+            sky: { brand: '#0EA5E9', light: '#38BDF8' },
+            cta: '#F97316',
+          },
+          animation: {
+            'fade-up': 'fadeUp 0.6s ease forwards',
+            'fade-in': 'fadeIn 0.8s ease forwards',
+            'float': 'float 6s ease-in-out infinite',
+            'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+            'spin-slow': 'spin 8s linear infinite',
+            'counter': 'counter 2s ease-out forwards',
+          },
+          keyframes: {
+            fadeUp: { from: { opacity: 0, transform: 'translateY(32px)' }, to: { opacity: 1, transform: 'translateY(0)' } },
+            fadeIn: { from: { opacity: 0 }, to: { opacity: 1 } },
+            float: { '0%,100%': { transform: 'translateY(0px)' }, '50%': { transform: 'translateY(-18px)' } },
+            glowPulse: { '0%,100%': { opacity: 0.6, transform: 'scale(1)' }, '50%': { opacity: 1, transform: 'scale(1.05)' } },
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #040812;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    /* Gradient mesh background */
+    .bg-mesh {
+      background-color: #040812;
+      background-image:
+        radial-gradient(ellipse 80% 60% at 20% -10%, rgba(14,165,233,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 80% 110%, rgba(56,189,248,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(249,115,22,0.06) 0%, transparent 60%);
+    }
+
+    /* Grid overlay */
+    .bg-grid {
+      background-image: linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    /* Gradient text */
+    .text-gradient {
+      background: linear-gradient(135deg, #ffffff 0%, #38BDF8 40%, #0EA5E9 70%, #F97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .text-gradient-blue {
+      background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Glass cards */
+    .glass {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .glass-hover {
+      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .glass-hover:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(14,165,233,0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 60px rgba(14,165,233,0.12);
+    }
+
+    /* Glow orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    /* CTA button */
+    .btn-cta {
+      background: linear-gradient(135deg, #F97316, #EA580C);
+      transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 0 30px rgba(249,115,22,0.35);
+    }
+    .btn-cta:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(249,115,22,0.5);
+    }
+    .btn-cta:focus-visible {
+      outline: 2px solid #F97316;
+      outline-offset: 3px;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.22);
+      transform: translateY(-2px);
+    }
+    .btn-secondary:focus-visible {
+      outline: 2px solid #38BDF8;
+      outline-offset: 3px;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(4,8,18,0.7);
+      border: 1px solid rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+
+    /* Reveal on scroll */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s cubic-bezier(.22,.68,0,1.2), transform 0.65s cubic-bezier(.22,.68,0,1.2);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* Logo marquee */
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      animation: marquee 28s linear infinite;
+      width: max-content;
+    }
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* Stat counter */
+    .stat-value {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Gradient border */
+    .gradient-border {
+      position: relative;
+    }
+    .gradient-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(14,165,233,0.6), rgba(249,115,22,0.4));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Testimonial stars */
+    .star { color: #F97316; }
+
+    /* Feature icon ring */
+    .icon-ring {
+      background: linear-gradient(135deg, rgba(14,165,233,0.15), rgba(56,189,248,0.08));
+      border: 1px solid rgba(14,165,233,0.25);
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .marquee-track { animation: none; }
+      .orb { display: none; }
+      .reveal { transition: opacity 0.3s ease; transform: none; }
+      .glass-hover:hover { transform: none; }
+    }
+
+    /* Nav link */
+    .nav-link {
+      color: rgba(226,232,240,0.7);
+      transition: color 0.2s ease;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .nav-link:hover { color: #e2e8f0; }
+    .nav-link:focus-visible { outline: 2px solid #38BDF8; outline-offset: 3px; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-mesh">
+
+  <!-- ===================== NAVBAR ===================== -->
+  <header role="banner">
+    <nav
+      class="navbar fixed top-4 left-4 right-4 z-50 rounded-2xl px-5 py-3 flex items-center justify-between max-w-6xl mx-auto"
+      aria-label="Main navigation"
+    >
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 rounded-lg" aria-label="StunningAI home">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span class="font-semibold text-white text-sm tracking-tight">StunningAI</span>
+      </a>
+
+      <!-- Nav links (hidden on mobile) -->
+      <ul class="hidden md:flex items-center gap-6 list-none m-0 p-0" role="list">
+        <li><a href="#features" class="nav-link">Features</a></li>
+        <li><a href="#social-proof" class="nav-link">Customers</a></li>
+        <li><a href="#pricing" class="nav-link">Pricing</a></li>
+        <li><a href="#faq" class="nav-link">FAQ</a></li>
+      </ul>
+
+      <!-- CTA -->
+      <div class="flex items-center gap-3">
+        <a href="#" class="hidden sm:block nav-link text-sm">Sign in</a>
+        <a
+          href="#get-started"
+          class="btn-cta px-4 py-2 rounded-xl text-white font-semibold text-sm cursor-pointer inline-block"
+          aria-label="Get started with StunningAI"
+        >Get started</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ===================== HERO ===================== -->
+    <section class="bg-grid relative min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 pt-28 pb-20 overflow-hidden" aria-labelledby="hero-heading">
+
+      <!-- Glow orbs -->
+      <div class="orb w-[600px] h-[600px] bg-sky-500/20 -top-40 -left-32 animate-glow-pulse" aria-hidden="true"></div>
+      <div class="orb w-[400px] h-[400px] bg-orange-500/10 top-1/3 right-0 animate-float" aria-hidden="true" style="animation-delay: 2s"></div>
+      <div class="orb w-[300px] h-[300px] bg-sky-400/15 bottom-0 left-1/3" aria-hidden="true"></div>
+
+      <!-- Badge -->
+      <div class="reveal mb-6">
+        <span class="glass inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-sky-300 tracking-wide uppercase">
+          <span class="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse inline-block" aria-hidden="true"></span>
+          Now in Public Beta · v2.5.0
+        </span>
+      </div>
+
+      <!-- Heading -->
+      <h1 id="hero-heading" class="reveal reveal-delay-1 text-center font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.07] tracking-tight max-w-5xl">
+        <span class="text-gradient">Design intelligence</span><br/>
+        <span class="text-white">at your fingertips</span>
+      </h1>
+
+      <!-- Sub -->
+      <p class="reveal reveal-delay-2 mt-6 text-center text-lg sm:text-xl text-slate-400 max-w-2xl leading-relaxed">
+        67 UI styles, 161 color palettes, 57 font pairings, and 99 UX guidelines — all powered by AI to ship beautiful products faster than ever.
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="reveal reveal-delay-3 mt-10 flex flex-col sm:flex-row gap-4 items-center">
+        <a id="get-started" href="#" class="btn-cta px-7 py-3.5 rounded-xl text-white font-semibold text-base cursor-pointer inline-flex items-center gap-2">
+          Start for free
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a href="#features" class="btn-secondary px-7 py-3.5 rounded-xl text-white font-medium text-base cursor-pointer inline-flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+          </svg>
+          Watch demo
+        </a>
+      </div>
+
+      <!-- Social proof mini -->
+      <div class="reveal reveal-delay-4 mt-12 flex items-center gap-4">
+        <div class="flex -space-x-2" aria-label="Customer avatars">
+          <!-- Avatar circles -->
+          <div class="w-8 h-8 rounded-full border-2 border-slate-900 bg-gradient-to-br from-sky-400 to-blue-600" aria-hidden="true"></div>
+          <div class="w-8 h-8 rounded-full border-2 border-slate-900 bg-gradient-to-br from-purple-400 to-pink-500" aria-hidden="true"></div>
+          <div class="w-8 h-8 rounded-full border-2 border-slate-900 bg-gradient-to-br from-emerald-400 to-teal-500" aria-hidden="true"></div>
+          <div class="w-8 h-8 rounded-full border-2 border-slate-900 bg-gradient-to-br from-amber-400 to-orange-500" aria-hidden="true"></div>
+          <div class="w-8 h-8 rounded-full border-2 border-slate-900 bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-300" aria-hidden="true">+</div>
+        </div>
+        <p class="text-slate-400 text-sm">
+          <strong class="text-white font-semibold">4,200+</strong> designers & developers already using it
+        </p>
+      </div>
+
+      <!-- Hero visual (floating glass card) -->
+      <div class="reveal reveal-delay-4 mt-16 w-full max-w-4xl mx-auto" aria-hidden="true">
+        <div class="gradient-border glass rounded-2xl p-1 animate-float" style="animation-delay: 1s">
+          <div class="rounded-xl overflow-hidden" style="background: rgba(10,15,30,0.9);">
+            <!-- Mock browser bar -->
+            <div class="flex items-center gap-2 px-4 py-3 border-b border-white/5">
+              <div class="flex gap-1.5">
+                <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500/70"></div>
+              </div>
+              <div class="flex-1 mx-4">
+                <div class="h-5 rounded-md bg-white/5 px-3 flex items-center text-xs text-slate-500 max-w-xs mx-auto">
+                  app.stunningai.com/dashboard
+                </div>
+              </div>
+            </div>
+            <!-- Mock dashboard content -->
+            <div class="p-6 grid grid-cols-3 gap-4">
+              <div class="col-span-2 space-y-3">
+                <div class="h-8 rounded-lg bg-gradient-to-r from-sky-500/20 to-transparent"></div>
+                <div class="grid grid-cols-3 gap-3">
+                  <div class="h-20 rounded-xl bg-white/4 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-lg bg-sky-500/30"></div>
+                  </div>
+                  <div class="h-20 rounded-xl bg-white/4 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-lg bg-orange-500/30"></div>
+                  </div>
+                  <div class="h-20 rounded-xl bg-white/4 flex items-center justify-center">
+                    <div class="w-8 h-8 rounded-lg bg-purple-500/30"></div>
+                  </div>
+                </div>
+                <div class="h-28 rounded-xl bg-white/4 p-3">
+                  <div class="flex items-end gap-1 h-full">
+                    <div class="flex-1 bg-sky-500/40 rounded-sm" style="height: 60%"></div>
+                    <div class="flex-1 bg-sky-500/40 rounded-sm" style="height: 80%"></div>
+                    <div class="flex-1 bg-sky-400/60 rounded-sm" style="height: 95%"></div>
+                    <div class="flex-1 bg-sky-500/40 rounded-sm" style="height: 70%"></div>
+                    <div class="flex-1 bg-sky-500/40 rounded-sm" style="height: 55%"></div>
+                    <div class="flex-1 bg-sky-500/40 rounded-sm" style="height: 85%"></div>
+                    <div class="flex-1 bg-orange-400/60 rounded-sm" style="height: 100%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <div class="h-36 rounded-xl bg-white/4 p-3 flex flex-col gap-2">
+                  <div class="w-full h-2 rounded-full bg-white/10"><div class="h-full rounded-full bg-sky-400/80 w-3/4"></div></div>
+                  <div class="w-full h-2 rounded-full bg-white/10"><div class="h-full rounded-full bg-orange-400/80 w-1/2"></div></div>
+                  <div class="w-full h-2 rounded-full bg-white/10"><div class="h-full rounded-full bg-purple-400/80 w-4/5"></div></div>
+                  <div class="w-full h-2 rounded-full bg-white/10"><div class="h-full rounded-full bg-emerald-400/80 w-2/3"></div></div>
+                </div>
+                <div class="h-20 rounded-xl bg-gradient-to-br from-sky-500/20 to-blue-600/20 border border-sky-500/20 flex items-center justify-center">
+                  <span class="text-2xl font-bold text-gradient-blue">99%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== LOGO MARQUEE ===================== -->
+    <section class="py-16 overflow-hidden border-y border-white/5" aria-label="Trusted by leading companies">
+      <p class="text-center text-xs font-semibold text-slate-500 uppercase tracking-widest mb-8">Trusted by teams at</p>
+      <div class="relative overflow-hidden">
+        <div class="marquee-track" aria-hidden="true">
+          <!-- Set 1 -->
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Vercel</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Linear</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Notion</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Stripe</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Figma</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Loom</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Webflow</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Retool</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Framer</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Supabase</span>
+          <!-- Set 2 (duplicate for infinite scroll) -->
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Vercel</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Linear</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Notion</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Stripe</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Figma</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Loom</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Webflow</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Retool</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Framer</span>
+          <span class="text-slate-500 font-semibold text-lg whitespace-nowrap">Supabase</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STATS ===================== -->
+    <section class="py-24 px-4 sm:px-6 lg:px-8" aria-labelledby="stats-heading">
+      <div class="max-w-6xl mx-auto">
+        <h2 id="stats-heading" class="sr-only">Key metrics</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="reveal glass glass-hover rounded-2xl p-6 text-center cursor-default">
+            <p class="stat-value text-4xl font-bold text-gradient-blue" data-target="67" data-suffix="">0</p>
+            <p class="mt-2 text-sm text-slate-400">UI Styles</p>
+          </div>
+          <div class="reveal reveal-delay-1 glass glass-hover rounded-2xl p-6 text-center cursor-default">
+            <p class="stat-value text-4xl font-bold text-gradient-blue" data-target="161" data-suffix="">0</p>
+            <p class="mt-2 text-sm text-slate-400">Color Palettes</p>
+          </div>
+          <div class="reveal reveal-delay-2 glass glass-hover rounded-2xl p-6 text-center cursor-default">
+            <p class="stat-value text-4xl font-bold text-gradient-blue" data-target="4200" data-suffix="+">0</p>
+            <p class="mt-2 text-sm text-slate-400">Active Users</p>
+          </div>
+          <div class="reveal reveal-delay-3 glass glass-hover rounded-2xl p-6 text-center cursor-default">
+            <p class="stat-value text-4xl font-bold text-gradient-blue" data-target="99" data-suffix="%">0</p>
+            <p class="mt-2 text-sm text-slate-400">Satisfaction Rate</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FEATURES ===================== -->
+    <section id="features" class="py-24 px-4 sm:px-6 lg:px-8" aria-labelledby="features-heading">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <div class="reveal">
+            <span class="glass px-4 py-1.5 rounded-full text-xs font-semibold text-sky-300 uppercase tracking-wide">Features</span>
+          </div>
+          <h2 id="features-heading" class="reveal reveal-delay-1 mt-4 text-4xl sm:text-5xl font-bold text-white leading-tight">
+            Everything you need to<br/>
+            <span class="text-gradient-blue">ship stunning UI</span>
+          </h2>
+          <p class="reveal reveal-delay-2 mt-4 text-slate-400 text-lg max-w-xl mx-auto leading-relaxed">
+            A complete design intelligence system that turns complex decisions into one-click recommendations.
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Feature 1 -->
+          <article class="reveal glass glass-hover rounded-2xl p-6 cursor-pointer group" tabindex="0" aria-label="Design System Generator feature">
+            <div class="icon-ring w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">Design System Generator</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Instantly generate a complete design system — colors, typography, spacing — tailored to your product type and industry.</p>
+          </article>
+
+          <!-- Feature 2 -->
+          <article class="reveal reveal-delay-1 glass glass-hover rounded-2xl p-6 cursor-pointer group" tabindex="0" aria-label="Smart Color Palettes feature">
+            <div class="icon-ring w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="13.5" cy="6.5" r=".5" fill="#38BDF8"/><circle cx="17.5" cy="10.5" r=".5" fill="#38BDF8"/>
+                <circle cx="8.5" cy="7.5" r=".5" fill="#38BDF8"/><circle cx="6.5" cy="12.5" r=".5" fill="#38BDF8"/>
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">161 Smart Color Palettes</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">WCAG-compliant palettes curated for every industry — fintech, healthcare, beauty, SaaS, e-commerce, and more.</p>
+          </article>
+
+          <!-- Feature 3 -->
+          <article class="reveal reveal-delay-2 glass glass-hover rounded-2xl p-6 cursor-pointer group" tabindex="0" aria-label="Typography Intelligence feature">
+            <div class="icon-ring w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/>
+                <line x1="12" y1="4" x2="12" y2="20"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">Typography Intelligence</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">57 expert font pairings matched to your brand personality — from playful and minimal to serious and enterprise.</p>
+          </article>
+
+          <!-- Feature 4 -->
+          <article class="reveal glass glass-hover rounded-2xl p-6 cursor-pointer group" tabindex="0" aria-label="Multi-Stack Support feature">
+            <div class="icon-ring w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/>
+                <polyline points="2 12 12 17 22 12"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">15+ Tech Stacks</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Implementation-ready code for React, Next.js, Vue, Svelte, Flutter, SwiftUI, and more — with stack-specific best practices.</p>
+          </article>
+
+          <!-- Feature 5 -->
+          <article class="reveal reveal-delay-1 glass glass-hover rounded-2xl p-6 cursor-pointer group" tabindex="0" aria-label="UX Guidelines feature">
+            <div class="icon-ring w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">99 UX Guidelines</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">Battle-tested rules covering accessibility, animation timing, loading states, touch targets, and responsive patterns.</p>
+          </article>
+
+          <!-- Feature 6 — highlighted -->
+          <article class="reveal reveal-delay-2 gradient-border rounded-2xl p-6 cursor-pointer group" style="background: rgba(14,165,233,0.06);" tabindex="0" aria-label="AI-Powered Reasoning feature">
+            <div class="icon-ring w-12 h-12 rounded-xl flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-200" style="background: rgba(249,115,22,0.15); border-color: rgba(249,115,22,0.3);">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white mb-2">AI-Powered Reasoning</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">161 industry-specific reasoning rules that analyze your product context and surface the exact recommendations you need — with explanations.</p>
+            <span class="inline-block mt-4 text-xs font-semibold text-orange-400 uppercase tracking-wide">Most powerful</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SOCIAL PROOF ===================== -->
+    <section id="social-proof" class="py-24 px-4 sm:px-6 lg:px-8 border-t border-white/5" aria-labelledby="testimonials-heading">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-16">
+          <div class="reveal">
+            <span class="glass px-4 py-1.5 rounded-full text-xs font-semibold text-sky-300 uppercase tracking-wide">Testimonials</span>
+          </div>
+          <h2 id="testimonials-heading" class="reveal reveal-delay-1 mt-4 text-4xl sm:text-5xl font-bold text-white">
+            Loved by <span class="text-gradient-blue">design teams</span>
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5">
+          <!-- Testimonial 1 -->
+          <blockquote class="reveal glass glass-hover rounded-2xl p-6 flex flex-col gap-4 cursor-default">
+            <div class="flex gap-1" aria-label="5 stars rating">
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed flex-1">"StunningAI cut our design decision time by 70%. The color palette recommendations alone saved us three full sprints of back-and-forth."</p>
+            <footer class="flex items-center gap-3 pt-2 border-t border-white/5">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-400 to-blue-600 flex-shrink-0" aria-hidden="true"></div>
+              <div>
+                <cite class="not-italic font-semibold text-white text-sm">Sarah Chen</cite>
+                <p class="text-xs text-slate-500">Head of Design, Vercel</p>
+              </div>
+            </footer>
+          </blockquote>
+
+          <!-- Testimonial 2 -->
+          <blockquote class="reveal reveal-delay-1 glass glass-hover rounded-2xl p-6 flex flex-col gap-4 cursor-default">
+            <div class="flex gap-1" aria-label="5 stars rating">
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed flex-1">"As a solo developer, I used to dread the design phase. Now I spin up a full design system in under 2 minutes. It's genuinely magical."</p>
+            <footer class="flex items-center gap-3 pt-2 border-t border-white/5">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex-shrink-0" aria-hidden="true"></div>
+              <div>
+                <cite class="not-italic font-semibold text-white text-sm">Marcus Rivera</cite>
+                <p class="text-xs text-slate-500">Indie Developer</p>
+              </div>
+            </footer>
+          </blockquote>
+
+          <!-- Testimonial 3 -->
+          <blockquote class="reveal reveal-delay-2 glass glass-hover rounded-2xl p-6 flex flex-col gap-4 cursor-default">
+            <div class="flex gap-1" aria-label="5 stars rating">
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg class="star" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed flex-1">"The multi-stack support is a game changer. Our team ships across React, Flutter, and SwiftUI — StunningAI keeps everything consistent."</p>
+            <footer class="flex items-center gap-3 pt-2 border-t border-white/5">
+              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 flex-shrink-0" aria-hidden="true"></div>
+              <div>
+                <cite class="not-italic font-semibold text-white text-sm">Aiko Nakamura</cite>
+                <p class="text-xs text-slate-500">CTO, FinTech Startup</p>
+              </div>
+            </footer>
+          </blockquote>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== PRICING ===================== -->
+    <section id="pricing" class="py-24 px-4 sm:px-6 lg:px-8 border-t border-white/5" aria-labelledby="pricing-heading">
+      <div class="max-w-5xl mx-auto">
+        <div class="text-center mb-16">
+          <div class="reveal">
+            <span class="glass px-4 py-1.5 rounded-full text-xs font-semibold text-sky-300 uppercase tracking-wide">Pricing</span>
+          </div>
+          <h2 id="pricing-heading" class="reveal reveal-delay-1 mt-4 text-4xl sm:text-5xl font-bold text-white">Simple, transparent pricing</h2>
+          <p class="reveal reveal-delay-2 mt-3 text-slate-400 text-lg">Start free. Upgrade when you're ready.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-5 items-start">
+          <!-- Free -->
+          <div class="reveal glass glass-hover rounded-2xl p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-white">Starter</h3>
+            <div class="mt-4 flex items-end gap-1">
+              <span class="text-4xl font-bold text-white">$0</span>
+              <span class="text-slate-400 text-sm mb-1">/month</span>
+            </div>
+            <p class="mt-2 text-slate-400 text-sm">Perfect for individuals and side projects.</p>
+            <ul class="mt-6 space-y-3 text-sm" role="list">
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                5 design system generations/mo
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                20 color palettes
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                3 tech stacks
+              </li>
+            </ul>
+            <a href="#" class="btn-secondary mt-8 w-full py-2.5 rounded-xl text-white font-semibold text-sm cursor-pointer inline-flex items-center justify-center">Get started free</a>
+          </div>
+
+          <!-- Pro — highlighted -->
+          <div class="reveal reveal-delay-1 gradient-border rounded-2xl p-6 cursor-pointer relative" style="background: rgba(14,165,233,0.07);">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2">
+              <span class="bg-gradient-to-r from-sky-500 to-blue-600 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</span>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Pro</h3>
+            <div class="mt-4 flex items-end gap-1">
+              <span class="text-4xl font-bold text-white">$29</span>
+              <span class="text-slate-400 text-sm mb-1">/month</span>
+            </div>
+            <p class="mt-2 text-slate-400 text-sm">For professional designers and small teams.</p>
+            <ul class="mt-6 space-y-3 text-sm" role="list">
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                Unlimited generations
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                All 161 color palettes
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                All 15+ tech stacks
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                Priority support
+              </li>
+            </ul>
+            <a href="#" class="btn-cta mt-8 w-full py-2.5 rounded-xl text-white font-semibold text-sm cursor-pointer inline-flex items-center justify-center">Start Pro trial</a>
+          </div>
+
+          <!-- Enterprise -->
+          <div class="reveal reveal-delay-2 glass glass-hover rounded-2xl p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-white">Enterprise</h3>
+            <div class="mt-4 flex items-end gap-1">
+              <span class="text-4xl font-bold text-white">Custom</span>
+            </div>
+            <p class="mt-2 text-slate-400 text-sm">For large teams with custom requirements.</p>
+            <ul class="mt-6 space-y-3 text-sm" role="list">
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                Everything in Pro
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                Custom brand guidelines
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                SSO & team management
+              </li>
+              <li class="flex items-center gap-2 text-slate-300">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0EA5E9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+                Dedicated success manager
+              </li>
+            </ul>
+            <a href="#" class="btn-secondary mt-8 w-full py-2.5 rounded-xl text-white font-semibold text-sm cursor-pointer inline-flex items-center justify-center">Contact sales</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FAQ ===================== -->
+    <section id="faq" class="py-24 px-4 sm:px-6 lg:px-8 border-t border-white/5" aria-labelledby="faq-heading">
+      <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-14">
+          <div class="reveal">
+            <span class="glass px-4 py-1.5 rounded-full text-xs font-semibold text-sky-300 uppercase tracking-wide">FAQ</span>
+          </div>
+          <h2 id="faq-heading" class="reveal reveal-delay-1 mt-4 text-4xl font-bold text-white">Common questions</h2>
+        </div>
+
+        <div class="space-y-3" role="list">
+          <div class="reveal glass rounded-2xl overflow-hidden" role="listitem">
+            <details class="group">
+              <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-medium text-white text-sm hover:text-sky-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-inset">
+                What AI models power StunningAI?
+                <svg class="w-4 h-4 text-slate-400 transition-transform duration-200 group-open:rotate-45 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-4 text-slate-400 text-sm leading-relaxed">StunningAI uses a curated database of design rules combined with Claude AI for context-aware reasoning, giving you recommendations grounded in real design expertise rather than random generation.</p>
+            </details>
+          </div>
+
+          <div class="reveal reveal-delay-1 glass rounded-2xl overflow-hidden" role="listitem">
+            <details class="group">
+              <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-medium text-white text-sm hover:text-sky-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-inset">
+                Does it work with my existing codebase?
+                <svg class="w-4 h-4 text-slate-400 transition-transform duration-200 group-open:rotate-45 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-4 text-slate-400 text-sm leading-relaxed">Yes. StunningAI outputs stack-specific code snippets in your framework of choice (React, Vue, Tailwind, Flutter, etc.) that can be dropped directly into your project.</p>
+            </details>
+          </div>
+
+          <div class="reveal reveal-delay-2 glass rounded-2xl overflow-hidden" role="listitem">
+            <details class="group">
+              <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-medium text-white text-sm hover:text-sky-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-inset">
+                Are the color palettes WCAG compliant?
+                <svg class="w-4 h-4 text-slate-400 transition-transform duration-200 group-open:rotate-45 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-4 text-slate-400 text-sm leading-relaxed">All palettes are tested to meet WCAG AA (4.5:1 contrast ratio for normal text) and are labeled with their compliance level so you can make informed decisions.</p>
+            </details>
+          </div>
+
+          <div class="reveal reveal-delay-3 glass rounded-2xl overflow-hidden" role="listitem">
+            <details class="group">
+              <summary class="flex items-center justify-between px-6 py-4 cursor-pointer list-none font-medium text-white text-sm hover:text-sky-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 focus-visible:ring-inset">
+                Can I cancel anytime?
+                <svg class="w-4 h-4 text-slate-400 transition-transform duration-200 group-open:rotate-45 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+              </summary>
+              <p class="px-6 pb-4 text-slate-400 text-sm leading-relaxed">Absolutely. No contracts, no lock-in. Cancel at any time from your dashboard and you'll retain access until the end of your current billing period.</p>
+            </details>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== FINAL CTA ===================== -->
+    <section class="py-24 px-4 sm:px-6 lg:px-8 border-t border-white/5" aria-labelledby="final-cta-heading">
+      <div class="max-w-3xl mx-auto text-center">
+        <div class="reveal gradient-border glass rounded-3xl p-12 relative overflow-hidden">
+          <div class="orb w-72 h-72 bg-sky-500/20 -top-12 -left-12" aria-hidden="true"></div>
+          <div class="orb w-72 h-72 bg-orange-500/15 -bottom-12 -right-12" aria-hidden="true"></div>
+          <div class="relative z-10">
+            <h2 id="final-cta-heading" class="text-4xl sm:text-5xl font-bold text-white leading-tight">
+              Ready to ship <span class="text-gradient">stunning UI</span>?
+            </h2>
+            <p class="mt-4 text-slate-400 text-lg">Join 4,200+ designers and developers already building beautiful products.</p>
+            <div class="mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <a href="#" class="btn-cta px-8 py-3.5 rounded-xl text-white font-semibold text-base cursor-pointer inline-flex items-center gap-2">
+                Start for free
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </a>
+              <p class="text-slate-500 text-sm">No credit card required</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="py-12 px-4 sm:px-6 lg:px-8 border-t border-white/5" role="contentinfo">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span class="font-semibold text-white text-sm">StunningAI</span>
+      </div>
+      <nav class="flex gap-6" aria-label="Footer navigation">
+        <a href="#" class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Privacy</a>
+        <a href="#" class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Terms</a>
+        <a href="#" class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Docs</a>
+        <a href="#" class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Contact</a>
+      </nav>
+      <p class="text-slate-600 text-xs">&copy; 2026 StunningAI. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script>
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    revealEls.forEach(el => revealObserver.observe(el));
+
+    // Stat counter animation
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target, 10);
+      const suffix = el.dataset.suffix || '';
+      const duration = 1800;
+      const start = performance.now();
+      const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+      function tick(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const value = Math.round(easeOut(progress) * target);
+        el.textContent = value.toLocaleString() + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const statEls = document.querySelectorAll('.stat-value');
+    const counterObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            counterObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+    statEls.forEach(el => counterObserver.observe(el));
+
+    // Keyboard accessibility for card articles
+    document.querySelectorAll('article[tabindex="0"]').forEach(card => {
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          card.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
