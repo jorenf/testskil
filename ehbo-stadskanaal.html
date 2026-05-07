@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="nl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EHBO Stadskanaal — Eerste Hulp bij Ongelukken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            heading: ['Outfit', 'sans-serif'],
+            body: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #06090F;
+      color: #F1F5F9;
+      overflow-x: hidden;
+    }
+    h1,h2,h3,h4,.font-heading { font-family: 'Outfit', sans-serif; }
+
+    /* === NAVBAR === */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      transition: background 0.4s ease, border-color 0.4s ease, padding 0.3s ease;
+      padding: 1.25rem 0;
+    }
+    #navbar.scrolled {
+      background: rgba(6,9,15,0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 0.8rem 0;
+    }
+    .nav-link {
+      position: relative;
+      color: rgba(241,245,249,0.65);
+      font-size: 0.875rem; font-weight: 500;
+      transition: color 0.2s ease;
+      padding: 0.2rem 0;
+    }
+    .nav-link::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 100%; height: 1.5px; background: #DC1C1C;
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav-link:hover { color: white; }
+    .nav-link:hover::after { transform: scaleX(1); }
+    .nav-link:focus-visible { outline: 2px solid #DC1C1C; outline-offset: 4px; border-radius: 3px; }
+
+    /* === HERO === */
+    .hero-bg {
+      background: #06090F;
+      background-image:
+        radial-gradient(ellipse 80% 70% at 95% 50%, rgba(220,28,28,0.1) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 50% at 5% 85%, rgba(99,102,241,0.04) 0%, transparent 50%);
+    }
+    .dot-grid {
+      background-image: radial-gradient(circle, rgba(255,255,255,0.042) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    /* === GRADIENTS === */
+    .text-red-grad {
+      background: linear-gradient(135deg, #FF5555 0%, #DC1C1C 55%, #AA1515 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* === BUTTONS === */
+    .btn-red {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: #DC1C1C; color: white;
+      font-family: 'Outfit', sans-serif; font-weight: 600;
+      padding: 0.875rem 1.75rem; border-radius: 0.75rem;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 0 rgba(220,28,28,0); cursor: pointer;
+    }
+    .btn-red:hover { background: #f03030; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(220,28,28,0.38); }
+    .btn-red:focus-visible { outline: 2px solid #DC1C1C; outline-offset: 3px; }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: transparent; color: rgba(241,245,249,0.8);
+      font-family: 'Outfit', sans-serif; font-weight: 500;
+      padding: 0.875rem 1.75rem; border-radius: 0.75rem;
+      border: 1px solid rgba(255,255,255,0.14);
+      transition: border-color 0.2s, color 0.2s, transform 0.2s; cursor: pointer;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.32); color: white; transform: translateY(-2px); }
+    .btn-ghost:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 3px; }
+
+    /* === GLASS === */
+    .glass {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    /* === SECTION LABEL === */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: #DC1C1C; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      font-family: 'Outfit', sans-serif;
+    }
+    .section-label::before {
+      content: ''; display: inline-block;
+      width: 22px; height: 2px; background: #DC1C1C; border-radius: 1px;
+    }
+
+    /* === SERVICE CARDS === */
+    .service-card {
+      background: white; border: 1px solid #E5E7EB; border-radius: 1.25rem; padding: 2rem;
+      transition: transform 0.3s cubic-bezier(.22,.68,0,1.2), box-shadow 0.3s ease, border-color 0.3s ease;
+      cursor: default;
+    }
+    .service-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      border-color: rgba(220,28,28,0.18);
+    }
+    .service-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: rgba(220,28,28,0.07);
+      border: 1px solid rgba(220,28,28,0.12);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1.25rem;
+      transition: background 0.2s;
+    }
+    .service-card:hover .service-icon { background: rgba(220,28,28,0.12); }
+
+    /* === COURSE CARDS === */
+    .course-card {
+      background: white; border: 1px solid #E5E7EB; border-radius: 1.25rem;
+      overflow: hidden;
+      transition: transform 0.3s cubic-bezier(.22,.68,0,1.2), box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+    .course-card:hover { transform: translateY(-8px); box-shadow: 0 24px 60px rgba(0,0,0,0.11); }
+    .course-stripe { height: 4px; background: linear-gradient(90deg, #DC1C1C, #FF5555); }
+
+    /* === TESTIMONIAL CARDS === */
+    .t-card {
+      background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 1.25rem; padding: 2rem;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .t-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.07); transform: translateY(-4px); }
+
+    /* === ANIMATIONS === */
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-16px); }
+    }
+    @keyframes spin-slow  { to { transform: rotate(360deg); } }
+    @keyframes spin-rev   { to { transform: rotate(-360deg); } }
+    @keyframes cross-pulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(220,28,28,0.28)); }
+      50%       { filter: drop-shadow(0 0 22px rgba(220,28,28,0.6)); }
+    }
+    @keyframes scroll-bounce {
+      0%, 100% { transform: translateY(0); opacity: 0.6; }
+      50%       { transform: translateY(8px); opacity: 1; }
+    }
+    .anim-float-1 { animation: float 5s ease-in-out infinite; }
+    .anim-float-2 { animation: float 6s ease-in-out 1.5s infinite; }
+    .ring-1 { animation: spin-slow 32s linear infinite; }
+    .ring-2 { animation: spin-rev  48s linear infinite; }
+    .ring-3 { animation: spin-slow 22s linear infinite; }
+    .cross-anim { animation: cross-pulse 3.5s ease-in-out infinite; }
+    .scroll-anim { animation: scroll-bounce 2.5s ease-in-out infinite; }
+
+    /* === GSAP INIT (hidden until animated in) === */
+    .gi { opacity: 0; }
+
+    /* === MOBILE MENU === */
+    #mob-menu {
+      display: none; position: fixed; inset: 0;
+      background: rgba(6,9,15,0.98); z-index: 99;
+      flex-direction: column; align-items: center; justify-content: center; gap: 2rem;
+    }
+    #mob-menu.open { display: flex; }
+    .mob-link {
+      color: rgba(241,245,249,0.75);
+      font-family: 'Outfit', sans-serif; font-size: 1.875rem; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .mob-link:hover { color: #DC1C1C; }
+
+    /* === EVENT BLOCK === */
+    .event-block {
+      background: #0D1117;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 1.5rem; overflow: hidden;
+    }
+
+    /* === REDUCED MOTION === */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.1ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Skip link -->
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-[200] focus:px-4 focus:py-2 focus:bg-red-600 focus:text-white focus:rounded-lg focus:font-semibold focus:font-heading">
+  Ga naar inhoud
+</a>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<header id="navbar" aria-label="Hoofdnavigatie">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+
+    <a href="#" class="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg" aria-label="EHBO Stadskanaal homepage">
+      <div class="w-9 h-9 flex-shrink-0" aria-hidden="true">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="36" height="36" rx="8" fill="#DC1C1C"/>
+          <rect x="14" y="7" width="8" height="22" rx="2" fill="white"/>
+          <rect x="7" y="14" width="22" height="8" rx="2" fill="white"/>
+        </svg>
+      </div>
+      <div>
+        <div class="font-heading font-semibold text-white text-sm leading-tight">EHBO</div>
+        <div class="text-slate-400 text-[11px] leading-tight tracking-wide">Stadskanaal</div>
+      </div>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-7" aria-label="Primaire navigatie">
+      <a href="#over-ons"    class="nav-link">Over ons</a>
+      <a href="#diensten"    class="nav-link">Diensten</a>
+      <a href="#cursussen"   class="nav-link">Cursussen</a>
+      <a href="#evenementen" class="nav-link">Evenementen</a>
+      <a href="#contact"     class="nav-link">Contact</a>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="#cursussen" class="btn-red text-sm py-2.5 px-5 hidden sm:inline-flex">Inschrijven</a>
+      <button id="ham-btn" class="md:hidden p-2 flex flex-col gap-1.5 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg"
+        aria-label="Menu openen" aria-expanded="false" aria-controls="mob-menu">
+        <span class="w-6 h-0.5 bg-slate-300 rounded block"></span>
+        <span class="w-6 h-0.5 bg-slate-300 rounded block"></span>
+        <span class="w-6 h-0.5 bg-slate-300 rounded block"></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div id="mob-menu" role="dialog" aria-label="Mobiel menu" aria-modal="true">
+  <button id="mob-close" class="absolute top-5 right-5 p-2 text-slate-300 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg" aria-label="Menu sluiten">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <nav class="flex flex-col items-center gap-5" aria-label="Mobiele navigatie">
+    <a href="#over-ons"    class="mob-link" tabindex="-1">Over ons</a>
+    <a href="#diensten"    class="mob-link" tabindex="-1">Diensten</a>
+    <a href="#cursussen"   class="mob-link" tabindex="-1">Cursussen</a>
+    <a href="#evenementen" class="mob-link" tabindex="-1">Evenementen</a>
+    <a href="#contact"     class="mob-link" tabindex="-1">Contact</a>
+    <a href="#cursussen"   class="btn-red mt-3"            tabindex="-1">Inschrijven</a>
+  </nav>
+</div>
+
+<main id="main">
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="hero-bg dot-grid relative min-h-svh flex items-center overflow-hidden pt-20"
+  aria-labelledby="hero-h1">
+
+  <!-- Ambient orbs -->
+  <div class="absolute top-1/4 right-0 w-[500px] h-[500px] rounded-full bg-red-700/8 blur-[120px] pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute bottom-0 left-0   w-72        h-72        rounded-full bg-indigo-900/5 blur-[80px]  pointer-events-none" aria-hidden="true"></div>
+
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-20 lg:py-28 w-full grid lg:grid-cols-2 gap-14 items-center">
+
+    <!-- Text -->
+    <div>
+      <div class="gi hero-badge mb-6">
+        <span class="glass inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-heading font-semibold text-red-300 uppercase tracking-widest">
+          <span class="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" aria-hidden="true"></span>
+          Erkend · Professioneel · Lokaal
+        </span>
+      </div>
+
+      <h1 id="hero-h1" class="font-heading font-black text-5xl sm:text-6xl lg:text-[4.5rem] leading-[1.03] tracking-tight text-white">
+        <span class="block gi hero-l1">Klaar als</span>
+        <span class="block gi hero-l2 text-red-grad">het telt.</span>
+      </h1>
+
+      <p class="gi hero-sub mt-6 text-slate-400 text-lg leading-relaxed max-w-lg">
+        EHBO Stadskanaal traint vrijwilligers en professionals in levensreddende eerste hulp. Betrouwbaar, erkend en al decennialang verankerd in de regio.
+      </p>
+
+      <div class="gi hero-ctas mt-10 flex flex-wrap gap-4">
+        <a href="#cursussen" class="btn-red">
+          Bekijk cursussen
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#over-ons" class="btn-ghost">Over onze vereniging</a>
+      </div>
+
+      <ul class="gi hero-trust mt-11 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-500" role="list">
+        <li class="flex items-center gap-2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          Erkend Oranje Kruis
+        </li>
+        <li class="flex items-center gap-2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          Gecertificeerde instructeurs
+        </li>
+        <li class="flex items-center gap-2">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+          50+ jaar ervaring
+        </li>
+      </ul>
+    </div>
+
+    <!-- Visual -->
+    <div class="gi hero-visual hidden lg:flex items-center justify-center relative" aria-hidden="true">
+      <!-- Rings -->
+      <div class="absolute w-80  h-80  rounded-full border border-red-800/18 ring-1"></div>
+      <div class="absolute w-96  h-96  rounded-full border border-red-900/10 ring-2"></div>
+      <div class="absolute w-64  h-64  rounded-full border border-red-700/14 ring-3"></div>
+      <!-- Glow -->
+      <div class="absolute w-44 h-44 rounded-full bg-red-600/8 blur-3xl"></div>
+      <!-- Cross -->
+      <svg class="cross-anim relative z-10 w-52 h-52" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="88" fill="rgba(220,28,28,0.04)" stroke="rgba(220,28,28,0.1)" stroke-width="1"/>
+        <rect x="75" y="32" width="50" height="136" rx="9" fill="#DC1C1C" opacity="0.92"/>
+        <rect x="32" y="75" width="136" height="50" rx="9" fill="#DC1C1C" opacity="0.92"/>
+        <rect x="84" y="32" width="20" height="48" rx="5" fill="rgba(255,255,255,0.1)"/>
+        <rect x="32" y="84" width="48" height="20" rx="5" fill="rgba(255,255,255,0.1)"/>
+      </svg>
+      <!-- Floating badges -->
+      <div class="absolute top-6 right-0 glass rounded-xl px-4 py-3 text-center anim-float-1">
+        <div class="font-heading font-bold text-2xl text-white">50+</div>
+        <div class="text-xs text-slate-400 mt-0.5">Jaar actief</div>
+      </div>
+      <div class="absolute bottom-10 left-0 glass rounded-xl px-4 py-3 text-center anim-float-2">
+        <div class="font-heading font-bold text-2xl text-white">2.000+</div>
+        <div class="text-xs text-slate-400 mt-0.5">Cursisten opgeleid</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-7 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2" aria-hidden="true">
+    <span class="text-[10px] text-slate-600 font-heading uppercase tracking-widest">Scroll</span>
+    <div class="scroll-anim w-5 h-8 rounded-full border border-slate-700 flex items-start justify-center pt-1.5">
+      <div class="w-1 h-2 bg-slate-600 rounded-full"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ STATS ═══════════════════ -->
+<section class="bg-[#0D1117] border-y border-white/5 py-16" aria-label="Onze impact in cijfers">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 stats-section">
+      <div class="text-center stat-item">
+        <div class="font-heading font-extrabold text-5xl text-white stat-num" data-target="50" data-suffix="+">0</div>
+        <div class="mt-2 text-slate-400 text-sm">Jaar actief in de regio</div>
+      </div>
+      <div class="text-center stat-item">
+        <div class="font-heading font-extrabold text-5xl text-white stat-num" data-target="2000" data-suffix="+">0</div>
+        <div class="mt-2 text-slate-400 text-sm">Cursisten opgeleid</div>
+      </div>
+      <div class="text-center stat-item">
+        <div class="font-heading font-extrabold text-5xl text-white stat-num" data-target="150" data-suffix="+">0</div>
+        <div class="mt-2 text-slate-400 text-sm">Evenementen begeleid</div>
+      </div>
+      <div class="text-center stat-item">
+        <div class="font-heading font-extrabold text-5xl text-white stat-num" data-target="80" data-suffix="+">0</div>
+        <div class="mt-2 text-slate-400 text-sm">Actieve leden</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ DIENSTEN ═══════════════════ -->
+<section id="diensten" class="bg-white py-24 px-4 sm:px-6" aria-labelledby="diensten-h2">
+  <div class="max-w-6xl mx-auto">
+    <div class="rs mb-16">
+      <div class="ri"><span class="section-label">Onze diensten</span></div>
+      <h2 id="diensten-h2" class="ri font-heading font-bold text-4xl sm:text-5xl text-gray-900 mt-4 max-w-xl leading-tight">
+        Alles op het gebied van <span class="text-red-600">eerste hulp</span>
+      </h2>
+      <p class="ri mt-4 text-gray-500 text-lg max-w-lg leading-relaxed">
+        Van cursus tot evenementenbegeleiding — wij staan voor u klaar.
+      </p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 rs">
+
+      <article class="service-card ri" tabindex="0" aria-label="EHBO Basiscursus">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <h3 class="font-heading font-semibold text-lg text-gray-900 mb-2">EHBO Basiscursus</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Erkend diploma via het Oranje Kruis. De basis voor elke hulpverlener.</p>
+        <a href="#cursussen" class="mt-5 inline-flex items-center gap-1.5 text-red-600 text-sm font-heading font-semibold hover:gap-3 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded">
+          Meer info <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </article>
+
+      <article class="service-card ri" tabindex="0" aria-label="Reanimatie en AED">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+          </svg>
+        </div>
+        <h3 class="font-heading font-semibold text-lg text-gray-900 mb-2">Reanimatie & AED</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Borstcompressies en AED-gebruik. Vergroot de overlevingskans direct.</p>
+        <a href="#cursussen" class="mt-5 inline-flex items-center gap-1.5 text-red-600 text-sm font-heading font-semibold hover:gap-3 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded">
+          Meer info <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </article>
+
+      <article class="service-card ri" tabindex="0" aria-label="Bedrijfshulpverlening BHV">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <h3 class="font-heading font-semibold text-lg text-gray-900 mb-2">Bedrijfshulpverlening</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Wettelijk verplichte BHV-training voor uw personeel. Op locatie mogelijk.</p>
+        <a href="#cursussen" class="mt-5 inline-flex items-center gap-1.5 text-red-600 text-sm font-heading font-semibold hover:gap-3 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded">
+          Meer info <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </article>
+
+      <article class="service-card ri" tabindex="0" aria-label="Evenementenbegeleiding">
+        <div class="service-icon" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h3 class="font-heading font-semibold text-lg text-gray-900 mb-2">Evenementen­begeleiding</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Professionele EHBO-post bij sport, festivals en buurtactiviteiten.</p>
+        <a href="#evenementen" class="mt-5 inline-flex items-center gap-1.5 text-red-600 text-sm font-heading font-semibold hover:gap-3 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 rounded">
+          Meer info <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ OVER ONS ═══════════════════ -->
+<section id="over-ons" class="dot-grid bg-[#06090F] py-24 px-4 sm:px-6 overflow-hidden" aria-labelledby="over-h2">
+  <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+
+    <!-- Visual card -->
+    <div class="rs order-2 lg:order-1">
+      <div class="ri glass rounded-2xl p-8 relative">
+        <div class="flex items-center gap-4 mb-7">
+          <div class="w-12 h-12 rounded-xl bg-red-600/12 border border-red-600/20 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+          </div>
+          <div>
+            <div class="font-heading font-semibold text-white text-sm">Altijd bereikbaar</div>
+            <div class="text-slate-500 text-xs">Voor al uw vragen</div>
+          </div>
+        </div>
+        <div class="space-y-5">
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 mb-2">
+              <span>EHBO diploma slagingspercentage</span><span>98%</span>
+            </div>
+            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-red-700 to-red-500" style="width:98%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 mb-2">
+              <span>Reanimatie & AED</span><span>95%</span>
+            </div>
+            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-red-700 to-red-500" style="width:95%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs text-slate-400 mb-2">
+              <span>Klanttevredenheid</span><span>97%</span>
+            </div>
+            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-red-700 to-red-500" style="width:97%"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Floating badge -->
+        <div class="absolute -bottom-5 -right-5 glass border border-red-900/20 rounded-xl px-5 py-3.5 ri" style="transition-delay:.15s">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-full bg-red-600/18 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.2" stroke-linecap="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+            <div>
+              <div class="font-heading font-semibold text-white text-sm">Erkend diploma</div>
+              <div class="text-slate-400 text-xs">Oranje Kruis gecertificeerd</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text -->
+    <div class="rs order-1 lg:order-2">
+      <div class="ri"><span class="section-label">Over ons</span></div>
+      <h2 id="over-h2" class="ri font-heading font-bold text-4xl sm:text-5xl text-white mt-4 leading-tight">
+        Al meer dan vijftig jaar <span class="text-red-grad">veiligheid in de regio</span>
+      </h2>
+      <p class="ri mt-5 text-slate-400 text-lg leading-relaxed">
+        EHBO Stadskanaal is een actieve vrijwilligersvereniging die zich inzet voor eerste hulpverlening in de regio Stadskanaal. We zijn aangesloten bij het Oranje Kruis en werken nauw samen met lokale organisaties, scholen en bedrijven.
+      </p>
+      <p class="ri mt-4 text-slate-400 leading-relaxed">
+        Onze gecertificeerde instructeurs bieden kwalitatief onderwijs in een toegankelijke omgeving — voor mensen van alle leeftijden en achtergronden.
+      </p>
+      <ul class="ri mt-8 space-y-3.5" role="list">
+        <li class="flex items-center gap-3 text-slate-300 text-sm">
+          <div class="w-5 h-5 rounded-full bg-red-600/12 border border-red-600/22 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="3.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          Lid van het Oranje Kruis — nationaal erkend
+        </li>
+        <li class="flex items-center gap-3 text-slate-300 text-sm">
+          <div class="w-5 h-5 rounded-full bg-red-600/12 border border-red-600/22 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="3.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          Kleinschalig en persoonlijk onderwijs
+        </li>
+        <li class="flex items-center gap-3 text-slate-300 text-sm">
+          <div class="w-5 h-5 rounded-full bg-red-600/12 border border-red-600/22 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="3.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          Cursussen voor particulieren én bedrijven
+        </li>
+        <li class="flex items-center gap-3 text-slate-300 text-sm">
+          <div class="w-5 h-5 rounded-full bg-red-600/12 border border-red-600/22 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="3.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          Actief bij evenementen door heel de regio
+        </li>
+      </ul>
+      <div class="ri mt-10">
+        <a href="#contact" class="btn-red">
+          Neem contact op
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CURSUSSEN ═══════════════════ -->
+<section id="cursussen" class="bg-[#F8F9FC] py-24 px-4 sm:px-6" aria-labelledby="cursussen-h2">
+  <div class="max-w-6xl mx-auto">
+    <div class="rs mb-16">
+      <div class="ri"><span class="section-label">Cursusaanbod</span></div>
+      <h2 id="cursussen-h2" class="ri font-heading font-bold text-4xl sm:text-5xl text-gray-900 mt-4 leading-tight">
+        Kies uw <span class="text-red-600">opleiding</span>
+      </h2>
+      <p class="ri mt-3 text-gray-500 text-lg">Praktijkgericht, erkend en toegankelijk voor iedereen.</p>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-6 rs">
+
+      <!-- Course 1 -->
+      <article class="course-card ri" tabindex="0" aria-label="EHBO Basiscursus">
+        <div class="course-stripe" aria-hidden="true"></div>
+        <div class="p-7">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <h3 class="font-heading font-bold text-xl text-gray-900">EHBO Basiscursus</h3>
+            <span class="flex-shrink-0 bg-red-50 text-red-600 text-xs font-heading font-semibold px-2.5 py-1 rounded-full">Beginner</span>
+          </div>
+          <p class="text-gray-500 text-sm leading-relaxed mb-6">De grondbeginselen van eerste hulp. Na het examen ontvangt u het erkende EHBO-diploma van het Oranje Kruis.</p>
+          <ul class="space-y-2.5 mb-7" role="list">
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              8 wekelijkse lessen
+            </li>
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Erkend Oranje Kruis diploma
+            </li>
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Lesmateriaal inbegrepen
+            </li>
+          </ul>
+          <div class="flex items-center justify-between pt-5 border-t border-gray-100">
+            <div>
+              <span class="font-heading font-bold text-2xl text-gray-900">€ 95</span>
+              <span class="text-gray-400 text-sm ml-1">p.p.</span>
+            </div>
+            <a href="#contact" class="btn-red text-sm py-2.5 px-4">Inschrijven</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Course 2 — featured -->
+      <article class="course-card ri relative" tabindex="0" aria-label="Reanimatie en AED, meest gevraagd"
+        style="box-shadow: 0 0 0 2px #DC1C1C, 0 20px 60px rgba(220,28,28,0.1); transform: translateY(-6px);">
+        <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 z-10">
+          <span class="bg-red-600 text-white text-xs font-heading font-bold px-4 py-1 rounded-full">Meest gevraagd</span>
+        </div>
+        <div class="course-stripe" aria-hidden="true"></div>
+        <div class="p-7">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <h3 class="font-heading font-bold text-xl text-gray-900">Reanimatie & AED</h3>
+            <span class="flex-shrink-0 bg-red-50 text-red-600 text-xs font-heading font-semibold px-2.5 py-1 rounded-full">Alle niveaus</span>
+          </div>
+          <p class="text-gray-500 text-sm leading-relaxed mb-6">Leer hoe u reanimatie toepast en een AED gebruikt. Vergroot de overlevingskans bij een hartstilstand aanzienlijk.</p>
+          <ul class="space-y-2.5 mb-7" role="list">
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              1 dagdeel (3 uur)
+            </li>
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Certificaat na afronding
+            </li>
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Oefenen met AED-trainer
+            </li>
+          </ul>
+          <div class="flex items-center justify-between pt-5 border-t border-gray-100">
+            <div>
+              <span class="font-heading font-bold text-2xl text-gray-900">€ 45</span>
+              <span class="text-gray-400 text-sm ml-1">p.p.</span>
+            </div>
+            <a href="#contact" class="btn-red text-sm py-2.5 px-4">Inschrijven</a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Course 3 -->
+      <article class="course-card ri" tabindex="0" aria-label="BHV Bedrijfshulpverlening">
+        <div class="course-stripe" aria-hidden="true"></div>
+        <div class="p-7">
+          <div class="flex items-start justify-between gap-3 mb-4">
+            <h3 class="font-heading font-bold text-xl text-gray-900">BHV — Bedrijfs­hulpverlening</h3>
+            <span class="flex-shrink-0 bg-slate-100 text-slate-600 text-xs font-heading font-semibold px-2.5 py-1 rounded-full">Zakelijk</span>
+          </div>
+          <p class="text-gray-500 text-sm leading-relaxed mb-6">Wettelijk verplichte opleiding voor uw medewerkers. Inclusief ontruiming, brandblusser en eerste hulp bij noodsituaties.</p>
+          <ul class="space-y-2.5 mb-7" role="list">
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Volledige dag
+            </li>
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              BHV-certificaat (herhalbaar)
+            </li>
+            <li class="flex items-center gap-2.5 text-sm text-gray-600">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>
+              Groepstraining op locatie
+            </li>
+          </ul>
+          <div class="flex items-center justify-between pt-5 border-t border-gray-100">
+            <span class="font-heading font-semibold text-lg text-gray-700">Op aanvraag</span>
+            <a href="#contact" class="btn-red text-sm py-2.5 px-4">Offerte aanvragen</a>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ EVENEMENTEN ═══════════════════ -->
+<section id="evenementen" class="dot-grid bg-[#06090F] py-24 px-4 sm:px-6" aria-labelledby="ev-h2">
+  <div class="max-w-6xl mx-auto">
+    <div class="event-block rs">
+      <div class="grid lg:grid-cols-2">
+
+        <div class="p-10 lg:p-14 ri">
+          <span class="section-label">Evenementen</span>
+          <h2 id="ev-h2" class="font-heading font-bold text-4xl sm:text-5xl text-white mt-4 leading-tight">
+            Professionele <span class="text-red-grad">EHBO-post</span> bij uw evenement
+          </h2>
+          <p class="mt-5 text-slate-400 leading-relaxed">
+            Organiseert u een sportwedstrijd, festival, concert of buurtactiviteit? Onze gecertificeerde vrijwilligers zorgen voor verantwoorde begeleiding met een complete EHBO-post en materiaal.
+          </p>
+          <ul class="mt-8 space-y-4" role="list">
+            <li class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-red-600/10 border border-red-600/18 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <span class="text-slate-300">Gediplomeerde EHBO-ers</span>
+            </li>
+            <li class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-red-600/10 border border-red-600/18 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <span class="text-slate-300">Volledig uitgeruste EHBO-post</span>
+            </li>
+            <li class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-red-600/10 border border-red-600/18 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#DC1C1C" stroke-width="2" stroke-linecap="round">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <span class="text-slate-300">Tijdig en discreet aanwezig</span>
+            </li>
+          </ul>
+          <div class="mt-10">
+            <a href="#contact" class="btn-red">
+              Evenement aanmelden
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <div class="hidden lg:flex items-center justify-center p-14 border-l border-white/5 ri" aria-hidden="true">
+          <div class="grid grid-cols-2 gap-4 w-full max-w-xs">
+            <div class="glass rounded-2xl p-5 text-center col-span-2">
+              <div class="font-heading font-bold text-3xl text-white">150+</div>
+              <div class="text-slate-400 text-xs mt-1">Evenementen begeleid</div>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center border border-red-900/20">
+              <div class="font-heading font-bold text-lg text-white">Sport</div>
+              <div class="text-slate-500 text-xs mt-1">Wedstrijden</div>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center">
+              <div class="font-heading font-bold text-lg text-white">Feesten</div>
+              <div class="text-slate-500 text-xs mt-1">& Festivals</div>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center">
+              <div class="font-heading font-bold text-lg text-white">School</div>
+              <div class="text-slate-500 text-xs mt-1">Activiteiten</div>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center border border-red-900/20">
+              <div class="font-heading font-bold text-lg text-white">Bedrijfs</div>
+              <div class="text-slate-500 text-xs mt-1">evenementen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ TESTIMONIALS ═══════════════════ -->
+<section class="bg-white py-24 px-4 sm:px-6" aria-labelledby="t-h2">
+  <div class="max-w-6xl mx-auto">
+    <div class="rs mb-16 text-center">
+      <div class="ri flex justify-center"><span class="section-label">Ervaringen</span></div>
+      <h2 id="t-h2" class="ri font-heading font-bold text-4xl sm:text-5xl text-gray-900 mt-4">
+        Wat deelnemers<br/>over ons zeggen
+      </h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-5 rs">
+
+      <blockquote class="t-card ri">
+        <div class="flex gap-0.5 mb-4" aria-label="5 van 5 sterren">
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="text-gray-600 text-sm leading-relaxed">"Uitstekende cursus! De instructeurs leggen alles heel duidelijk uit en de praktijkoefeningen geven je echt vertrouwen. Ik voel me nu veel zekerder bij het verlenen van eerste hulp."</p>
+        <footer class="mt-5 pt-4 border-t border-gray-100 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex-shrink-0" aria-hidden="true"></div>
+          <div>
+            <cite class="not-italic font-heading font-semibold text-gray-900 text-sm">Marieke de Vries</cite>
+            <p class="text-gray-400 text-xs">EHBO Basiscursus deelnemer</p>
+          </div>
+        </footer>
+      </blockquote>
+
+      <blockquote class="t-card ri">
+        <div class="flex gap-0.5 mb-4" aria-label="5 van 5 sterren">
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="text-gray-600 text-sm leading-relaxed">"We hebben EHBO Stadskanaal gevraagd voor ons jaarlijkse sporttoernooi. Professioneel, discreet aanwezig en volledig uitgerust. Ik raad ze aan elke evenementenorganisator aan."</p>
+        <footer class="mt-5 pt-4 border-t border-gray-100 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex-shrink-0" aria-hidden="true"></div>
+          <div>
+            <cite class="not-italic font-heading font-semibold text-gray-900 text-sm">Joost Bakker</cite>
+            <p class="text-gray-400 text-xs">Evenementenorganisator</p>
+          </div>
+        </footer>
+      </blockquote>
+
+      <blockquote class="t-card ri">
+        <div class="flex gap-0.5 mb-4" aria-label="5 van 5 sterren">
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg class="text-amber-400" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p class="text-gray-600 text-sm leading-relaxed">"De BHV-training verliep perfect. Ons team is nu goed voorbereid en wettelijk compliant. De instructeur was betrokken en hield rekening met onze specifieke werksituatie."</p>
+        <footer class="mt-5 pt-4 border-t border-gray-100 flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex-shrink-0" aria-hidden="true"></div>
+          <div>
+            <cite class="not-italic font-heading font-semibold text-gray-900 text-sm">Sandra Hoekstra</cite>
+            <p class="text-gray-400 text-xs">HR Manager, Stadskanaal</p>
+          </div>
+        </footer>
+      </blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ CTA ═══════════════════ -->
+<section class="relative overflow-hidden py-28 px-4 sm:px-6" style="background:linear-gradient(135deg,#130303 0%,#0c0101 40%,#06090F 100%);" aria-labelledby="cta-h2">
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-red-700/8 blur-[120px] pointer-events-none" aria-hidden="true"></div>
+  <div class="max-w-4xl mx-auto text-center relative z-10 rs">
+    <div class="ri flex justify-center"><span class="section-label">Aan de slag</span></div>
+    <h2 id="cta-h2" class="ri font-heading font-extrabold text-5xl sm:text-6xl text-white mt-4 leading-tight">
+      Klaar om het verschil<br/>te <span class="text-red-grad">maken?</span>
+    </h2>
+    <p class="ri mt-6 text-slate-400 text-xl max-w-xl mx-auto leading-relaxed">
+      Schrijf u in voor een cursus, vraag EHBO-begeleiding aan of word lid van onze vereniging.
+    </p>
+    <div class="ri mt-10 flex flex-col sm:flex-row gap-4 items-center justify-center">
+      <a href="#contact" class="btn-red text-base px-8 py-4">
+        Direct contact opnemen
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="tel:+31599000000" class="btn-ghost text-base" aria-label="Bel ons">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.38a2 2 0 0 1 1.994-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.09a16 16 0 0 0 6 6l1.27-.99a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        Bel ons
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer id="contact" class="bg-[#0D1117] border-t border-white/5" role="contentinfo">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-16 grid md:grid-cols-3 gap-10">
+
+    <div>
+      <a href="#" class="flex items-center gap-3 mb-5 w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-lg" aria-label="EHBO Stadskanaal">
+        <div class="w-8 h-8 flex-shrink-0" aria-hidden="true">
+          <svg viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="7" fill="#DC1C1C"/>
+            <rect x="14" y="7" width="8" height="22" rx="2" fill="white"/>
+            <rect x="7" y="14" width="22" height="8" rx="2" fill="white"/>
+          </svg>
+        </div>
+        <div class="font-heading font-semibold text-white text-sm">EHBO Stadskanaal</div>
+      </a>
+      <p class="text-slate-500 text-sm leading-relaxed">
+        Al meer dan 50 jaar de eerste hulporganisatie voor Stadskanaal en omgeving. Erkend lid van het Oranje Kruis.
+      </p>
+    </div>
+
+    <nav aria-label="Footer navigatie">
+      <h3 class="font-heading font-semibold text-white text-sm mb-5">Navigatie</h3>
+      <ul class="space-y-3" role="list">
+        <li><a href="#over-ons"    class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Over ons</a></li>
+        <li><a href="#diensten"    class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Diensten</a></li>
+        <li><a href="#cursussen"   class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Cursussen</a></li>
+        <li><a href="#evenementen" class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Evenementen</a></li>
+        <li><a href="#contact"     class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">Contact</a></li>
+      </ul>
+    </nav>
+
+    <address class="not-italic">
+      <h3 class="font-heading font-semibold text-white text-sm mb-5">Contact</h3>
+      <ul class="space-y-3.5" role="list">
+        <li class="flex items-start gap-3">
+          <svg class="text-red-600 flex-shrink-0 mt-0.5" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span class="text-slate-500 text-sm">Stadskanaal, Groningen<br/>Nederland</span>
+        </li>
+        <li class="flex items-center gap-3">
+          <svg class="text-red-600 flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.38a2 2 0 0 1 1.994-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.09a16 16 0 0 0 6 6l1.27-.99a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <a href="tel:+31599000000" class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">0599 – 000 000</a>
+        </li>
+        <li class="flex items-center gap-3">
+          <svg class="text-red-600 flex-shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          <a href="mailto:info@ehbo-stadskanaal.nl" class="text-slate-500 hover:text-slate-300 text-sm transition-colors duration-200">info@ehbo-stadskanaal.nl</a>
+        </li>
+      </ul>
+    </address>
+  </div>
+
+  <div class="border-t border-white/5">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-slate-600 text-xs">&copy; 2025 EHBO Vereniging Stadskanaal. Alle rechten voorbehouden.</p>
+      <div class="flex gap-5">
+        <a href="#" class="text-slate-600 hover:text-slate-400 text-xs transition-colors">Privacyverklaring</a>
+        <a href="#" class="text-slate-600 hover:text-slate-400 text-xs transition-colors">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Hero entrance — runs immediately on load
+  gsap.set(['.hero-badge','.hero-l1','.hero-l2','.hero-sub','.hero-ctas','.hero-trust','.hero-visual'], { opacity: 0 });
+
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' }, delay: 0.15 });
+  tl.fromTo('.hero-badge',  { opacity:0, y:22 },         { opacity:1, y:0, duration:0.55 })
+    .fromTo('.hero-l1',     { opacity:0, y:52, skewY:1 }, { opacity:1, y:0, skewY:0, duration:0.8 }, '-=0.25')
+    .fromTo('.hero-l2',     { opacity:0, y:52, skewY:1 }, { opacity:1, y:0, skewY:0, duration:0.8 }, '-=0.65')
+    .fromTo('.hero-sub',    { opacity:0, y:28 },          { opacity:1, y:0, duration:0.7 },           '-=0.4')
+    .fromTo('.hero-ctas',   { opacity:0, y:20 },          { opacity:1, y:0, duration:0.6 },           '-=0.38')
+    .fromTo('.hero-trust',  { opacity:0, y:16 },          { opacity:1, y:0, duration:0.5 },           '-=0.32')
+    .fromTo('.hero-visual', { opacity:0, x:40 },          { opacity:1, x:0, duration:1, ease:'power2.out' }, '-=0.85');
+
+  // Navbar scroll solidify
+  ScrollTrigger.create({
+    start: 'top -50',
+    onEnter:     () => document.getElementById('navbar').classList.add('scrolled'),
+    onLeaveBack: () => document.getElementById('navbar').classList.remove('scrolled'),
+  });
+
+  // Section scroll reveals
+  document.querySelectorAll('.rs').forEach(section => {
+    const items = section.querySelectorAll('.ri');
+    if (!items.length) return;
+    gsap.fromTo(items,
+      { opacity:0, y:40 },
+      { opacity:1, y:0, stagger:0.1, duration:0.72, ease:'power3.out',
+        scrollTrigger: { trigger: section, start:'top 78%', once:true } }
+    );
+  });
+
+  // Stat counters
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const target = parseInt(el.dataset.target, 10);
+    const suffix = el.dataset.suffix || '';
+    const obj = { v: 0 };
+    gsap.to(obj, {
+      v: target, duration: 2.2, ease: 'power2.out',
+      onUpdate: () => { el.textContent = Math.round(obj.v).toLocaleString('nl-NL') + suffix; },
+      scrollTrigger: { trigger: el, start: 'top 82%', once: true }
+    });
+  });
+
+  // Mobile menu
+  const hamBtn   = document.getElementById('ham-btn');
+  const mobMenu  = document.getElementById('mob-menu');
+  const mobClose = document.getElementById('mob-close');
+  const mobLinks = mobMenu.querySelectorAll('a');
+
+  function openMob() {
+    mobMenu.classList.add('open');
+    hamBtn.setAttribute('aria-expanded', 'true');
+    mobLinks.forEach(l => l.setAttribute('tabindex','0'));
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMob() {
+    mobMenu.classList.remove('open');
+    hamBtn.setAttribute('aria-expanded', 'false');
+    mobLinks.forEach(l => l.setAttribute('tabindex','-1'));
+    document.body.style.overflow = '';
+    hamBtn.focus();
+  }
+  hamBtn.addEventListener('click', openMob);
+  mobClose.addEventListener('click', closeMob);
+  mobLinks.forEach(l => l.addEventListener('click', closeMob));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobMenu.classList.contains('open')) closeMob(); });
+
+  // Keyboard on cards
+  document.querySelectorAll('article[tabindex="0"]').forEach(card => {
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { const a = card.querySelector('a'); if (a) a.click(); }
+    });
+  });
+</script>
+
+</body>
+</html>
